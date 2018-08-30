@@ -73,7 +73,7 @@ pipeline:
       - SKELETON_DIR=/mnt/data/apps/testing/data/apiSkeleton
      commands:
       - cd ./owncloud-smoketest/tests/acceptance
-      - bash ./run.sh --remote --tags smokeTest
+      - bash ./run.sh --remote --tags @smokeTest
 
   publish:
     image: toolhippie/docker:latest
