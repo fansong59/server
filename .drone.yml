@@ -45,14 +45,34 @@ pipeline:
     environment:
       - DOCKER_HOST=tcp://docker:2375
     commands:
-      - docker run -p 8000:80 owncloud/server:latest
+      - |
+        docker run -p 8000:80 \
+        -e DEBUG=true \
+        -e OWNCLOUD_APPS_INSTALL=https://github.com/owncloud/testing/releases/download/latest/testing.tar.gz \
+        -e OWNCLOUD_APPS_ENABLE=testing \
+        owncloud/server:latest
 
-  test:
+  prepare-acceptance-tests:
+    image: owncloudci/php
+    pull: true
+    commands:
+      - mkdir -p owncloud-smoketest
+      - wget -qO- "https://download.owncloud.org/community/owncloud-daily-stable10-qa.tar.bz2" | tar -xj -C "owncloud-smoketest" --strip 1
+
+  wait-for-owncloud:
     image: owncloud/ubuntu:latest
     pull: true
     commands:
       - wait-for-it -t 600 docker:8000
-      - curl -sSf http://docker:8000/status.php
+
+  run-smoke-test:
+     image: owncloudci/php
+     pull: true
+     environment:
+      - TEST_SERVER_URL=http://docker:8000
+     commands:
+      - cd ./owncloud-smoketest/tests/acceptance
+      - bash ./run.sh --remote --tags smokeTest
 
   publish:
     image: toolhippie/docker:latest
