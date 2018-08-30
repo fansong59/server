@@ -70,6 +70,7 @@ pipeline:
      pull: true
      environment:
       - TEST_SERVER_URL=http://docker:8000
+      - SKELETON_DIR=/mnt/data/apps/testing/data/apiSkeleton
      commands:
       - cd ./owncloud-smoketest/tests/acceptance
       - bash ./run.sh --remote --tags smokeTest
