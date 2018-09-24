@@ -76,20 +76,19 @@ pipeline:
       - bash run.sh --remote --tags @smokeTest
 
   run-ui-smoke-test:
-     image: owncloudci/php
-     pull: true
-     environment:
+    image: owncloudci/php
+    pull: true
     environment:
-      - BROWSER=chrome
-      - SELENIUM_HOST=selenium
-      - SELENIUM_PORT=4444
-      - PLATFORM=Linux
-      - MAILHOG_HOST=email
-      - TEST_SERVER_URL=http://docker:8000
-      - SKELETON_DIR=/mnt/data/apps/testing/data/webUISkeleton
-     commands:
-      - cd ./owncloud-smoketest/tests/acceptance
-      - bash run.sh --remote --tags @smokeTest
+     - BROWSER=chrome
+     - SELENIUM_HOST=selenium
+     - SELENIUM_PORT=4444
+     - PLATFORM=Linux
+     - MAILHOG_HOST=email
+     - TEST_SERVER_URL=http://docker:8000
+     - SKELETON_DIR=/mnt/data/apps/testing/data/webUISkeleton
+    commands:
+     - cd ./owncloud-smoketest/tests/acceptance
+     - bash run.sh --remote --tags @smokeTest
 
   publish:
     image: toolhippie/docker:latest
