@@ -72,7 +72,7 @@ pipeline:
       - TEST_SERVER_URL=http://docker:8000
       - SKELETON_DIR=/mnt/data/apps/testing/data/apiSkeleton
      commands:
-      - cd ./owncloud-smoketest/tests/acceptance
+      - cd /drone/owncloud-smoketest/tests/acceptance
       - bash run.sh --remote --tags @smokeTest
 
   run-ui-smoke-test:
@@ -87,7 +87,7 @@ pipeline:
      - TEST_SERVER_URL=http://docker:8000
      - SKELETON_DIR=/mnt/data/apps/testing/data/webUISkeleton
     commands:
-     - cd ./owncloud-smoketest/tests/acceptance
+     - cd /drone/owncloud-smoketest/tests/acceptance
      - bash run.sh --remote --tags @smokeTest
 
   publish:
