@@ -56,8 +56,8 @@ pipeline:
     image: owncloudci/php
     pull: true
     commands:
-      - mkdir -p owncloud-smoketest
-      - wget -qO- "https://download.owncloud.org/community/owncloud-daily-stable10-qa.tar.bz2" | tar -xj -C owncloud-smoketest --strip 1
+      - mkdir -p /drone/owncloud-smoketest
+      - wget -qO- "https://download.owncloud.org/community/owncloud-daily-stable10-qa.tar.bz2" | tar -xj -C /drone/owncloud-smoketest --strip 1
 
   wait-for-owncloud:
     image: owncloud/ubuntu:latest
@@ -65,12 +65,28 @@ pipeline:
     commands:
       - wait-for-it -t 600 docker:8000
 
-  run-smoke-test:
+  run-api-smoke-test:
      image: owncloudci/php
      pull: true
      environment:
       - TEST_SERVER_URL=http://docker:8000
       - SKELETON_DIR=/mnt/data/apps/testing/data/apiSkeleton
+     commands:
+      - cd ./owncloud-smoketest/tests/acceptance
+      - bash run.sh --remote --tags @smokeTest
+
+  run-ui-smoke-test:
+     image: owncloudci/php
+     pull: true
+     environment:
+    environment:
+      - BROWSER=chrome
+      - SELENIUM_HOST=selenium
+      - SELENIUM_PORT=4444
+      - PLATFORM=Linux
+      - MAILHOG_HOST=email
+      - TEST_SERVER_URL=http://docker:8000
+      - SKELETON_DIR=/mnt/data/apps/testing/data/webUISkeleton
      commands:
       - cd ./owncloud-smoketest/tests/acceptance
       - bash run.sh --remote --tags @smokeTest
@@ -114,6 +130,11 @@ pipeline:
 services:
   docker:
     image: docker:18.04-dind
+    pull: true
+
+  selenium:
+    image: selenium/standalone-chrome-debug:latest
+    pull: true
 
 matrix:
   include:
